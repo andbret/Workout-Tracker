@@ -7,32 +7,19 @@ const logger = require("morgan");
 
 const app = express();
 
-app.use(logger("dev"));
 
-const Example = require("./exampleModel.js");
+
 const PORT = process.env.PORT || 3000;
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dbExample", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
-
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+app.use(logger("dev"));
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 //API ROUTES
-// POST /api/workouts
-// PUT /api/workouts/id 
-// GET /api/workouts/range
-
-app.get("/", (req, res) => {
-res.sendFile(path.join(__dirname, "public/index.html"));
-});
-
-app.get("/stats", (req, res) => {
-    res.sendFile(path.join(__dirname, "public/stats.html"));
-    });
-
-app.get("/exercise", (req, res) => {
-    res.sendFile(path.join(__dirname, "public/exercise.html"));
-    });    
-
+require("./routes/api_routes.js")(app);
+require("./routes/html_routes.js")(app);
 app.listen(PORT, () =>{
-    console.log(`App is running on htttp://localhost:${PORT}`);
+    console.log(`App is running on http://localhost:${PORT}`);
 } );
 
